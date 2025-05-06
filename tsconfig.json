@@ -2,16 +2,17 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "baseUrl": ".", // 👈 Ajouté pour activer les chemins non relatifs
     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+      "@/*": ["src/*"],
+      "@theme/*": ["src/theme/*"]
+    },
+    "jsx": "react-native" // Ajouter cette ligne pour activer JSX avec React Native
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "src/theme/styled.d.ts"
   ]
 }

@@ -1,29 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { ApolloProvider } from "@apollo/client";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Provider as PaperProvider } from "react-native-paper";
+import { client } from "../apollo/client";
+import CustomHeader from "../components/CustomHeader";
+import { AuthProvider } from "../context/AuthContext";
+import { ThemeProvider, useTheme } from "../theme/themeContext";
+import { Providers } from "../utils/Provider";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
+  const theme = useTheme();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <ThemeProvider>
+      <Providers>
+        <ApolloProvider client={client}>
+          <AuthProvider>
+            <PaperProvider>
+              <StatusBar
+                style={theme.mode === "dark" ? "light" : "dark"}
+                backgroundColor={theme.colors.background}
+                translucent
+              />
+              <Stack>
+                <Stack.Screen
+                  name="Login"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen name="Home" options={{
+                  header:()=> <CustomHeader/>
+                }}/>
+              </Stack>
+            </PaperProvider>
+          </AuthProvider>
+        </ApolloProvider>
+      </Providers>
     </ThemeProvider>
   );
 }
