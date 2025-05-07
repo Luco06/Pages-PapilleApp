@@ -1,3 +1,4 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
@@ -9,10 +10,12 @@ import Title from "../components/Title";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../theme/themeContext";
 
+
 const LoginScreen = () => {
   const theme = useTheme();
   const [mdp, setMdp] = useState("");
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const {login} = useAuth();
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -42,10 +45,19 @@ const LoginScreen = () => {
         label="Email"
       />
       <Input
-        secureTextEntry={true}
+        secureTextEntry={!showPassword}
         value={mdp}
         onChangeText={(text) => setMdp(text)}
         label="Mot de passe"
+        iconRight={
+          <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <AntDesign
+              name={showPassword ? "eye" : "eyeo"}
+              size={24}
+              color={theme.colors.primary}
+            />
+          </Pressable>
+        }
       />
       <Button txt="Se connecter" onPress={handleLogin} />
       <Pressable
