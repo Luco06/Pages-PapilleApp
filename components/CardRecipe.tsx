@@ -70,9 +70,6 @@ const styles  = StyleSheet.create({
     },
     HeaderText:{
         textAlign: 'center',
-        textShadowColor: '#000',
-        textShadowOffset: { width: 0, height: 1 },
-        textShadowRadius: 1,
         fontWeight: 'bold',
     },
     ImageContainer: {
@@ -98,9 +95,6 @@ const styles  = StyleSheet.create({
         padding: 2,
     },
     FooterText: {
-        textShadowColor: '#000',
-        textShadowOffset: { width: 0, height: 1 },
-        textShadowRadius: 1,
         margin: 4,
         width: '45%',
     }

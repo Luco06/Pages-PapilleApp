@@ -23,7 +23,7 @@ export default function RootLayout() {
               />
               <Stack>
                 <Stack.Screen
-                  name="Login"
+                  name="index"
                   options={{
                     headerShown: false,
                   }}
