@@ -1,15 +1,20 @@
-import { Text, View } from "react-native";
+import { Redirect } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+const Index = ()=> {
+  const { isAuthenticated } = useAuth();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady) {
+    return null; 
+  }
+
+ 
+  return <Redirect href={isAuthenticated ? '/Home' : '/Login'} />;
 }
+export default Index;
