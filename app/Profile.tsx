@@ -1,9 +1,223 @@
-import { Text, View } from 'react-native'
+import { useQuery } from "@apollo/client";
+import { FlashList } from "@shopify/flash-list";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Avatar from "../components/Avatar";
+import CardRecipeDetails from "../components/CardRecipeDetails";
+import CardRecipeProfile from "../components/CardRecipeProfile";
+import Pins from "../components/Pins";
+import { GET_USER } from "../graphql/queries/user";
+import { useTheme } from "../theme/themeContext";
+import { RecipeType, UserAtom } from "../utils/atoms";
 
 export default function Profile() {
+  const [user, setUser] = useAtom(UserAtom);
+  const [recipes, setRecipes] = useState<RecipeType[]>(user?.recettes ?? []);
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeType | null>(null);
+  const [filteredRecipes, setFilteredRecipes] = useState<RecipeType[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const { data } = useQuery(GET_USER, {
+    variables: { userId: user?.id },
+    skip: !user?.id,
+  });
+
+  const publicRecipes = recipes?.filter(
+    (recipe: RecipeType) => recipe.est_public === true
+  );
+
+  useEffect(() => {
+    if (data) {
+      setUser((prev) => (prev ? { ...prev, ...data } : data));
+    }
+  }, [data, setUser]);
+
+  useEffect(() => {
+    if (Array.isArray(user?.recettes)) {
+      setRecipes(data?.user.recettes);
+      setFilteredRecipes(data?.user.recettes);
+    }
+  }, [user, data?.user.recettes]);
+
+  const handleSelectCategory = (category: string) => {
+    const newCategory = selectedCategory === category ? null : category;
+    setSelectedCategory(newCategory);
+
+    if (newCategory) {
+      setFilteredRecipes(
+        recipes.filter((recipe) => recipe.categorie === newCategory)
+      );
+    } else {
+      setFilteredRecipes(recipes);
+    }
+  };
+  const theme = useTheme();
+  const handleRecipeClick = (recipe: RecipeType) => {
+    setSelectedRecipe(recipe);
+  };
+  const closeModal = () => {
+    setSelectedRecipe(null);
+  };
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  )
+    <SafeAreaView
+      style={[styles.Container, { backgroundColor: theme.colors.background }]}
+    >
+      <Avatar
+        src={
+          user?.avatar
+            ? { uri: user.avatar }
+            : require("../assets/images/bobMartin.png")
+        }
+        alt={user?.prenom || ""}
+      />
+      <View style={styles.BoxInfo}>
+        <Text
+          style={[
+            styles.txtSetting,
+            { color: theme.colors.primary, fontSize: theme.fontSize.medium },
+          ]}
+        >
+          {user?.prenom} {user?.nom}
+        </Text>
+        <View style={styles.BoxRecipe}>
+          <Text style={[styles.txtSetting, { color: theme.colors.text }]}>
+            Recettes: {recipes?.length || 0}
+          </Text>
+          <Text style={[styles.txtSetting, { color: theme.colors.text }]}>
+            Publiques: {publicRecipes?.length || 0}
+          </Text>
+          <Text style={[styles.txtSetting, { color: theme.colors.text }]}>
+            Favoris: {user?.favoris.length || 0}
+          </Text>
+        </View>
+        <Pins
+          onSelectCategory={handleSelectCategory}
+          selectedCategory={selectedCategory}
+        />
+      </View>
+      {filteredRecipes && filteredRecipes.length > 0 ? (
+        <FlashList
+          data={filteredRecipes}
+          estimatedItemSize={200}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16 }}
+          renderItem={({ item }) => (
+            <View style={styles.CenteredCardWrapper}>
+              <CardRecipeProfile
+                onPress={() => handleRecipeClick(item)}
+                titre={item.titre}
+                auteur={item.auteur.prenom}
+                bgImage={{ uri: item.img }}
+                couvert={item.nb_person}
+                cuission={item.tps_cook}
+                tep_prep={item.tps_prep}
+                dificulty={item.dificulty}
+                categorie={item.categorie}
+                publique={item. est_public}
+              />
+            </View>
+          )}
+        />
+      ) : (
+        <Text
+          style={{
+            color: theme.colors.text,
+            textAlign: "center",
+            marginTop: 20,
+          }}
+        >
+          Aucune recette trouvée dans cette catégorie.
+        </Text>
+      )}
+            <Modal
+        visible={!!selectedRecipe}
+        animationType="slide"
+        transparent={true}
+      >
+        <View
+          style={[
+            styles.ModalWrapper,
+            { backgroundColor: theme.colors.background },
+          ]}
+        >
+          <View style={styles.CenteredCardWrapperModal}>
+            <ScrollView contentContainerStyle={{ padding: 16, flexGrow: 1 }}>
+              <CardRecipeDetails
+                titre={selectedRecipe?.titre || ""}
+                auteur={selectedRecipe?.auteur.prenom || ""}
+                bgImage={{ uri: selectedRecipe?.img || "" }}
+                couvert={selectedRecipe?.nb_person || ""}
+                cuission={selectedRecipe?.tps_cook || ""}
+                tep_prep={selectedRecipe?.tps_prep || ""}
+                dificulty={selectedRecipe?.dificulty || ""}
+                categorie={selectedRecipe?.categorie || ""}
+                publique={selectedRecipe?.est_public}
+                ingredients={selectedRecipe?.ingredients || []}
+                instructions={
+                  Array.isArray(selectedRecipe?.instructions)
+                    ? selectedRecipe.instructions
+                    : []
+                }
+              />
+            </ScrollView>
+            <TouchableOpacity
+              style={[
+                styles.CloseButton,
+                { backgroundColor: theme.colors.primary },
+              ]}
+              onPress={closeModal}
+            >
+              <Text style={[styles.CloseText, { color: theme.colors.text }]}>
+                Fermer
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
 }
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+    padding: 20,
+  },
+  BoxInfo: {
+    alignItems: "center",
+  },
+  BoxInput: {
+    marginTop: 30,
+    alignItems: "center",
+  },
+  BoxRecipe: {
+    flexDirection: "row",
+    alignContent: "space-between",
+  },
+  txtSetting: {
+    margin: 10,
+  },
+  CenteredCardWrapper: {
+    alignItems: "center",
+  },
+  CloseButton: {
+    marginTop: 16,
+    padding: 10,
+    borderRadius: 8,
+  },
+  CloseText: {
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  ModalWrapper: {
+    flex: 1,
+    marginTop: 50,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  CenteredCardWrapperModal: {
+    alignItems: "center",
+    width: "100%",
+    flex: 1,
+  },
+});

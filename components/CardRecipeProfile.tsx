@@ -11,10 +11,11 @@ interface RecipeCardProps {
   tep_prep: string;
   dificulty: string;
   categorie: string;
+  publique: boolean;
   onPress: () => void;
 }
 
-export default function CardRecipe({
+export default function CardRecipeProfile({
   titre,
   auteur,
   bgImage,
@@ -22,6 +23,7 @@ export default function CardRecipe({
   tep_prep,
   dificulty,
   categorie,
+  publique,
   cuission,
   onPress
 }: RecipeCardProps) {
@@ -41,6 +43,7 @@ export default function CardRecipe({
             <Text style={[styles.FooterText, {color: theme.colors.text}]}>Préparation: {tep_prep}</Text>
             <Text style={[styles.FooterText, {color: theme.colors.text}]}>Difficulté: {dificulty}</Text>
             <Text style={[styles.FooterText, {color: theme.colors.text}]}>Catégorie: {categorie}</Text>
+            <Text style={[styles.FooterText, {color: theme.colors.text}]}>Publique: {publique ? "Oui" : "Non"}</Text>
         </View>
     </Pressable>
   );
@@ -53,7 +56,7 @@ const styles  = StyleSheet.create({
         justifyContent:'space-between',
         borderRadius: 12,
         padding: 8,
-        width:'95%',
+        width:'100%',
         marginBottom: 16,
         elevation: 5,
         shadowColor: '#000',
@@ -75,7 +78,7 @@ const styles  = StyleSheet.create({
     ImageContainer: {
         flexGrow: 1,
         width: '100%',
-        height: 300,
+        height: 200,
         position: 'relative',
         overflow: 'hidden',
     },

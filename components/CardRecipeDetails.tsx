@@ -11,6 +11,7 @@ interface RecipeCardDetailsProps {
   tep_prep: string;
   dificulty: string;
   categorie: string;
+  publique?: boolean;
   ingredients: string[];
   instructions: string[];
 }
@@ -26,6 +27,7 @@ export default function CardRecipeDetails({
   categorie,
   ingredients,
   instructions,
+  publique
 }: RecipeCardDetailsProps) {
   const theme = useTheme();
   return (
@@ -72,6 +74,9 @@ export default function CardRecipeDetails({
         </Text>
         <Text style={[styles.FooterText, { color: theme.colors.text }]}>
           Catégorie: {categorie}
+        </Text>
+        <Text style={[styles.FooterText, { color: theme.colors.text }]}>
+          Publique: {publique ? "Oui" : "Non"}
         </Text>
       </View>
       <View style={styles.Section}>
