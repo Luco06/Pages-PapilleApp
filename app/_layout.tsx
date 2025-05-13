@@ -31,6 +31,7 @@ export default function RootLayout() {
                 <Stack.Screen name="Home" options={{
                   header:()=> <CustomHeader/>
                 }}/>
+                
               </Stack>
             </PaperProvider>
           </AuthProvider>

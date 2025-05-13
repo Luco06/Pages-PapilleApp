@@ -1,5 +1,6 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
+import * as SecureStore from "expo-secure-store";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import {
@@ -15,6 +16,7 @@ import Avatar from "../components/Avatar";
 import CardRecipeProfile from "../components/CardRecipeProfile";
 import Pins from "../components/Pins";
 import UpdateRecipe from "../components/UpdateRecipe";
+import { DELETE_RECIPE } from "../graphql/mutations/deleteRecipe";
 import { GET_USER } from "../graphql/queries/user";
 import { useTheme } from "../theme/themeContext";
 import { RecipeType, UserAtom } from "../utils/atoms";
@@ -25,6 +27,13 @@ export default function Profile() {
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeType | null>(null);
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tokenStore = SecureStore.getItem("token");
+    setToken(tokenStore)
+  }, []);
+
 
   const { data } = useQuery(GET_USER, {
     variables: { userId: user?.id },
@@ -67,6 +76,17 @@ export default function Profile() {
   const closeModal = () => {
     setSelectedRecipe(null);
   };
+  const [DeleteRecette] = useMutation(DELETE_RECIPE, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    refetchQueries: [{ query: GET_USER, variables: { userId: user?.id } }],
+    onCompleted: () => {
+      alert("Recette supprimer !");
+    },
+  });
   return (
     <SafeAreaView
       style={[styles.Container, { backgroundColor: theme.colors.background }]}
@@ -113,6 +133,11 @@ export default function Profile() {
           renderItem={({ item }) => (
             <View style={styles.CenteredCardWrapper}>
               <CardRecipeProfile
+              onPressDialog={() => DeleteRecette({
+            variables:{
+                deleteRecetteId:item.id
+            }
+        })}
                 onPress={() => handleRecipeClick(item)}
                 titre={item.titre}
                 auteur={item.auteur.prenom}

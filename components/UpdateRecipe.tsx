@@ -7,7 +7,6 @@ import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { List } from "react-native-paper";
-import { DELETE_RECIPE } from "../graphql/mutations/deleteRecipe";
 import { UPDATE_RECIPE } from "../graphql/mutations/updateRecipe";
 import { GET_USER } from "../graphql/queries/user";
 import { useTheme } from "../theme/themeContext";
@@ -119,18 +118,7 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
       alert("Recette mise à jour !");
     },
   });
-  const [DeleteRecette] = useMutation(DELETE_RECIPE, {
-    context: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-    refetchQueries: [{ query: GET_USER, variables: { userId: user?.id } }],
-    onCompleted: () => {
-      setIsModalOpen(false);
-      alert("Recette supprimer !");
-    },
-  });
+
 
   const handleIngredientChange = (index: number, value: string) => {
     const newIngredients = [...recipeUpdate.ingredients];
@@ -379,11 +367,6 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
       <View style={styles.BoxBtn}>
         <Button txt="Mettre à jour" onPress={()=> updateRecipe({
             variables: { input: recipeUpdate, updateRecetteId: recipe?.id}
-        })} />
-        <Button txt="Supprimer" onPress={() => DeleteRecette({
-            variables:{
-                deleteRecetteId: recipe?.id
-            }
         })} />
       </View>
     </View>
