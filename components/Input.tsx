@@ -1,16 +1,17 @@
 import { ReactElement } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/themeContext';
 
 type InputProps = {
-  label: string;
+  label?: string;
   value: string;
   iconRight?: ReactElement;
   secureTextEntry?: boolean;
   onChangeText: (text: string) => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export default function Input({ label, value, onChangeText, secureTextEntry, iconRight }: InputProps) {
+export default function Input({ label, value, onChangeText, secureTextEntry, iconRight, style }: InputProps) {
   const theme = useTheme();
 
   return (
@@ -27,12 +28,13 @@ export default function Input({ label, value, onChangeText, secureTextEntry, ico
               color: theme.colors.text,
               paddingRight: iconRight ? 40 : 10, // pour éviter que le texte passe sous l'icône
             },
+         
           ]}
           secureTextEntry={secureTextEntry}
           onChangeText={onChangeText}
           value={value}
         />
-        {iconRight && <View style={styles.iconRight}>{iconRight}</View>}
+        {iconRight && <View style={[styles.iconRight,style]}>{iconRight}</View>}
       </View>
     </View>
   );

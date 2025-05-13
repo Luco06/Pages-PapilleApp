@@ -2,11 +2,19 @@ import { useQuery } from "@apollo/client";
 import { FlashList } from "@shopify/flash-list";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Avatar from "../components/Avatar";
-import CardRecipeDetails from "../components/CardRecipeDetails";
 import CardRecipeProfile from "../components/CardRecipeProfile";
 import Pins from "../components/Pins";
+import UpdateRecipe from "../components/UpdateRecipe";
 import { GET_USER } from "../graphql/queries/user";
 import { useTheme } from "../theme/themeContext";
 import { RecipeType, UserAtom } from "../utils/atoms";
@@ -114,7 +122,7 @@ export default function Profile() {
                 tep_prep={item.tps_prep}
                 dificulty={item.dificulty}
                 categorie={item.categorie}
-                publique={item. est_public}
+                publique={item.est_public}
               />
             </View>
           )}
@@ -130,7 +138,7 @@ export default function Profile() {
           Aucune recette trouvée dans cette catégorie.
         </Text>
       )}
-            <Modal
+      <Modal
         visible={!!selectedRecipe}
         animationType="slide"
         transparent={true}
@@ -142,23 +150,12 @@ export default function Profile() {
           ]}
         >
           <View style={styles.CenteredCardWrapperModal}>
-            <ScrollView contentContainerStyle={{ padding: 16, flexGrow: 1 }}>
-              <CardRecipeDetails
-                titre={selectedRecipe?.titre || ""}
-                auteur={selectedRecipe?.auteur.prenom || ""}
-                bgImage={{ uri: selectedRecipe?.img || "" }}
-                couvert={selectedRecipe?.nb_person || ""}
-                cuission={selectedRecipe?.tps_cook || ""}
-                tep_prep={selectedRecipe?.tps_prep || ""}
-                dificulty={selectedRecipe?.dificulty || ""}
-                categorie={selectedRecipe?.categorie || ""}
-                publique={selectedRecipe?.est_public}
-                ingredients={selectedRecipe?.ingredients || []}
-                instructions={
-                  Array.isArray(selectedRecipe?.instructions)
-                    ? selectedRecipe.instructions
-                    : []
-                }
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+            >
+              <UpdateRecipe
+                setIsModalOpen={closeModal}
+                recipe={selectedRecipe}
               />
             </ScrollView>
             <TouchableOpacity
@@ -216,8 +213,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
   },
   CenteredCardWrapperModal: {
-    alignItems: "center",
     width: "100%",
     flex: 1,
+    alignItems: "center",
   },
 });
