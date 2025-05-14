@@ -43,6 +43,7 @@ export default function Input({ label, value, onChangeText, secureTextEntry, ico
 const styles = StyleSheet.create({
   wrapper: {
     width: '80%',
+    margin:5
   },
   label: {
     marginBottom: 8,

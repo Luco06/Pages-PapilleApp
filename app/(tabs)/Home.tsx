@@ -1,21 +1,28 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import Feather from '@expo/vector-icons/Feather';
 import { FlashList } from "@shopify/flash-list";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
+import * as SecureStore from "expo-secure-store";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import {
   Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import Button from "../../components/Button";
 import CardRecipe from "../../components/CardRecipe";
 import CardRecipeDetails from "../../components/CardRecipeDetails";
 import Comment from "../../components/Comment";
+import Input from "../../components/Input";
+import { ADD_COMMENT } from "../../graphql/mutations/AddComment";
+import { DELETE_COMMENT } from "../../graphql/mutations/DeleteComment";
 import { GET_RECIPE } from "../../graphql/queries/recipes";
 import { useTheme } from "../../theme/themeContext";
 import { RecipeType, UserAtom } from "../../utils/atoms";
@@ -25,6 +32,8 @@ export default function Home() {
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeType | null>(null);
   const [user] = useAtom(UserAtom);
+  const [token, setToken] = useState<string | null>(null);
+  const [commentaire, setCommentaire] = useState("");
 
   const { data, loading, error } = useQuery(GET_RECIPE);
 
@@ -53,6 +62,10 @@ export default function Home() {
       setRecipes(publicRecipes);
     }
   }, [data, loading, error, setRecipes, user, selectedRecipe]);
+  useEffect(() => {
+    const tokenStore = SecureStore.getItem("token");
+    setToken(tokenStore)
+  }, []);
 
   const handleRecipeClick = (recipe: RecipeType) => {
     setSelectedRecipe(recipe);
@@ -60,6 +73,66 @@ export default function Home() {
   const closeModal = () => {
     setSelectedRecipe(null);
   };
+  const [DeleteComment] = useMutation(DELETE_COMMENT, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    refetchQueries: [{ query: GET_RECIPE }],
+    onCompleted: (data) => {
+      alert("Commentaire supprimé !");
+      // Filtrer le commentaire supprimé
+      if (selectedRecipe) {
+        setSelectedRecipe((prevSelectedRecipe) => {
+          if (prevSelectedRecipe) {
+            // Vérifiez que prevSelectedRecipe n'est pas null
+            return {
+              ...prevSelectedRecipe,
+              commentaire: prevSelectedRecipe.commentaire.filter(
+                (comment) => comment.id !== data.deleteComment.id // Assurez-vous que cette ligne est correcte selon votre mutation
+              ),
+            };
+          }
+          return prevSelectedRecipe; // Renvoie l'état précédent s'il est null
+        });
+      }
+    },
+  });
+  const handleDeleteComment = (commentId: string) => {
+    if (!commentId) return;
+    DeleteComment({
+      variables: { deleteCommentId: commentId },
+    });
+  };
+  const [CreateComment, {}] = useMutation(ADD_COMMENT, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    refetchQueries: [{ query: GET_RECIPE }],
+    onCompleted: () => {
+      alert("Commentaire ajouté !");
+      setCommentaire("");
+    },
+  });
+  const handleAddComment = () => {
+    if (!user?.id || !selectedRecipe?.id || !commentaire.trim()) {
+      alert("Le commentaire ne peut pas être vide.");
+      return;
+    }
+    CreateComment({
+      variables: {
+        input: {
+          auteur: user.id,
+          recette: selectedRecipe.id,
+          contenu: commentaire.trim(),
+        },
+      },
+    });
+  };
+
   return (
     <SafeAreaView
       style={[styles.Container, { backgroundColor: theme.colors.background }]}
@@ -115,15 +188,32 @@ export default function Home() {
                 }
               />
               {selectedRecipe?.commentaire?.map((item, index) => (
-                <Comment
+                <View style={styles.CommentBox}>
+                     <Comment
                   key={index}
                   contenu={item.contenu}
                   avatar={item.auteur.avatar}
                   prenom={item.auteur.prenom}
                   date={formatDate(item.dateCreation)}
                 />
+                    {user?.id === item?.auteur.id && (
+                         <Pressable onPress={() => handleDeleteComment(item?.id)}>
+                         <Feather
+                           name="trash-2"
+                           size={24}
+                           color={theme.colors.primary}
+                         />
+                       </Pressable>
+                    )}
+                </View>
+           
               ))}
+               
             </ScrollView>
+            <View style={styles.BoxAddComment}>
+                      <Input value={commentaire} onChangeText={(text)=> setCommentaire(text)}/>
+                      <Button txt="Ajouter un commentaire" disabled={!commentaire.trim()} onPress={handleAddComment}/>
+                    </View>
             <TouchableOpacity
               style={[
                 styles.CloseButton,
@@ -166,4 +256,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
+  CommentBox : {
+    flexDirection:"row",
+    alignItems:"center"
+  },
+  BoxAddComment: {
+    alignItems:"center",
+    width:"70%"
+  }
 });
