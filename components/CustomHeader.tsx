@@ -63,8 +63,8 @@ export default function CustomHeader() {
           }
         >
           <Menu.Item onPress={() => goTo("/Home")} title="Acceuil" />
-          <Menu.Item onPress={() => goTo("/Profile")} title="Profile" />
-          <Menu.Item onPress={() => goTo("/Setting")} title="Paramètre" />
+          <Menu.Item onPress={() => goTo("/(tabs)/Profile")} title="Profile" />
+          <Menu.Item onPress={() => goTo("/(tabs)/Setting")} title="Paramètre" />
           <Menu.Item onPress={handleLogout} title="Déconnexion" />
         </Menu>
       </View>

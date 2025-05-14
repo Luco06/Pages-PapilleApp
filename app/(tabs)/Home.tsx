@@ -13,12 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import CardRecipe from "../components/CardRecipe";
-import CardRecipeDetails from "../components/CardRecipeDetails";
-import Comment from "../components/Comment";
-import { GET_RECIPE } from "../graphql/queries/recipes";
-import { useTheme } from "../theme/themeContext";
-import { RecipeType, UserAtom } from "../utils/atoms";
+import CardRecipe from "../../components/CardRecipe";
+import CardRecipeDetails from "../../components/CardRecipeDetails";
+import Comment from "../../components/Comment";
+import { GET_RECIPE } from "../../graphql/queries/recipes";
+import { useTheme } from "../../theme/themeContext";
+import { RecipeType, UserAtom } from "../../utils/atoms";
 
 export default function Home() {
   const theme = useTheme();

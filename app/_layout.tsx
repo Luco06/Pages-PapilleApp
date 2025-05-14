@@ -3,7 +3,6 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Provider as PaperProvider } from "react-native-paper";
 import { client } from "../apollo/client";
-import CustomHeader from "../components/CustomHeader";
 import { AuthProvider } from "../context/AuthContext";
 import { ThemeProvider, useTheme } from "../theme/themeContext";
 import { Providers } from "../utils/Provider";
@@ -21,6 +20,7 @@ export default function RootLayout() {
                 backgroundColor={theme.colors.background}
                 translucent
               />
+             
               <Stack>
                 <Stack.Screen
                   name="index"
@@ -28,10 +28,18 @@ export default function RootLayout() {
                     headerShown: false,
                   }}
                 />
-                <Stack.Screen name="Home" options={{
-                  header:()=> <CustomHeader/>
-                }}/>
-                
+                   <Stack.Screen
+                  name="Login"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{
+                    headerShown: false,
+                  }}
+                />
               </Stack>
             </PaperProvider>
           </AuthProvider>
