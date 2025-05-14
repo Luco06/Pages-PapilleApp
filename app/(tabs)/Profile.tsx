@@ -12,14 +12,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Avatar from "../components/Avatar";
-import CardRecipeProfile from "../components/CardRecipeProfile";
-import Pins from "../components/Pins";
-import UpdateRecipe from "../components/UpdateRecipe";
-import { DELETE_RECIPE } from "../graphql/mutations/deleteRecipe";
-import { GET_USER } from "../graphql/queries/user";
-import { useTheme } from "../theme/themeContext";
-import { RecipeType, UserAtom } from "../utils/atoms";
+import AddRecipe from "../../components/AddRecipe";
+import Avatar from "../../components/Avatar";
+import CardRecipeProfile from "../../components/CardRecipeProfile";
+import Pins from "../../components/Pins";
+import UpdateRecipe from "../../components/UpdateRecipe";
+import { DELETE_RECIPE } from "../../graphql/mutations/deleteRecipe";
+import { GET_USER } from "../../graphql/queries/user";
+import { useTheme } from "../../theme/themeContext";
+import { RecipeType, UserAtom } from "../../utils/atoms";
 
 export default function Profile() {
   const [user, setUser] = useAtom(UserAtom);
@@ -28,12 +29,12 @@ export default function Profile() {
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [visibleAddRecipe, setVisibleAddRecipe] = useState(false);
 
   useEffect(() => {
     const tokenStore = SecureStore.getItem("token");
-    setToken(tokenStore)
+    setToken(tokenStore);
   }, []);
-
 
   const { data } = useQuery(GET_USER, {
     variables: { userId: user?.id },
@@ -91,14 +92,20 @@ export default function Profile() {
     <SafeAreaView
       style={[styles.Container, { backgroundColor: theme.colors.background }]}
     >
-      <Avatar
-        src={
-          user?.avatar
-            ? { uri: user.avatar }
-            : require("../assets/images/bobMartin.png")
-        }
-        alt={user?.prenom || ""}
-      />
+      <View style={styles.ViewAvatar}>
+        <AddRecipe
+        />
+
+        <Avatar
+          src={
+            user?.avatar
+              ? { uri: user.avatar }
+              : require("../../assets/images/bobMartin.png")
+          }
+          alt={user?.prenom || ""}
+        />
+      </View>
+
       <View style={styles.BoxInfo}>
         <Text
           style={[
@@ -133,11 +140,13 @@ export default function Profile() {
           renderItem={({ item }) => (
             <View style={styles.CenteredCardWrapper}>
               <CardRecipeProfile
-              onPressDialog={() => DeleteRecette({
-            variables:{
-                deleteRecetteId:item.id
-            }
-        })}
+                onPressDialog={() =>
+                  DeleteRecette({
+                    variables: {
+                      deleteRecetteId: item.id,
+                    },
+                  })
+                }
                 onPress={() => handleRecipeClick(item)}
                 titre={item.titre}
                 auteur={item.auteur.prenom}
@@ -204,6 +213,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     padding: 20,
+    marginTop: 20,
   },
   BoxInfo: {
     alignItems: "center",
@@ -241,5 +251,17 @@ const styles = StyleSheet.create({
     width: "100%",
     flex: 1,
     alignItems: "center",
+  },
+  ViewAvatar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+
+  IconWrapper: {
+    position: "absolute",
+    left: 0,
+    padding: 8,
   },
 });

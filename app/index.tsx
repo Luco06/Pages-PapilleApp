@@ -15,6 +15,6 @@ const Index = ()=> {
   }
 
  
-  return <Redirect href={isAuthenticated ? '/Home' : '/Login'} />;
+  return <Redirect href={isAuthenticated ? '/(tabs)/Home' : '/Login'} />;
 }
 export default Index;

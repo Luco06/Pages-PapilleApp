@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setToken(token);
         setUser(user);
         setIsAuthenticated(true);
-        router.push("/Home");
+        router.push("/(tabs)/Home");
       } else {
         throw new Error("Échec de l'authentification");
       }

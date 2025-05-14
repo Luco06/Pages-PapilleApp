@@ -63,8 +63,8 @@ export default function CustomHeader() {
           }
         >
           <Menu.Item onPress={() => goTo("/Home")} title="Acceuil" />
-          <Menu.Item onPress={() => goTo("/Profile")} title="Profile" />
-          <Menu.Item onPress={() => goTo("/Setting")} title="Paramètre" />
+          <Menu.Item onPress={() => goTo("/(tabs)/Profile")} title="Profile" />
+          <Menu.Item onPress={() => goTo("/(tabs)/Setting")} title="Paramètre" />
           <Menu.Item onPress={handleLogout} title="Déconnexion" />
         </Menu>
       </View>
@@ -74,14 +74,14 @@ export default function CustomHeader() {
 
 const styles = StyleSheet.create({
   HeaderContainer: {
-    padding: 16,
+    padding: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   AvatarWrapper: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     backgroundColor: "transparent",
   },
