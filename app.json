@@ -4,10 +4,13 @@
     "slug": "pagesndpapilles",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/IconPages&Pappiles.png",
     "scheme": "pagesndpapilles",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "fonts": [
+      "./assets/fonts/Playfair-Italic-VariableFont_opsz,wdth,wght.ttf"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -18,7 +21,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/AdaptiveIconPages&Pappiles.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -33,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/SplashLogoPages&Pappiles.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

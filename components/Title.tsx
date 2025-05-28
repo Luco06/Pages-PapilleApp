@@ -12,7 +12,8 @@ export default function Title({title}: TitleProps) {
       <Text style={[
         styles.text,{
           fontSize: theme.fontSize.title,
-          color: theme.colors.primary
+          color: theme.colors.primary,
+          fontFamily: "P&Ppolice"
         }
       ]}>{title}</Text>
   
