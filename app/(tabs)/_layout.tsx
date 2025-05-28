@@ -1,7 +1,6 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Image } from "expo-image";
 import { Tabs } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { useAtomValue } from "jotai";
 import CustomHeader from "../../components/CustomHeader";
 import { useTheme } from "../../theme/themeContext";
@@ -12,11 +11,6 @@ export default function TabLayout() {
   const user = useAtomValue(UserAtom);
   return (
     <>
-      <StatusBar
-        style={theme.mode === "dark" ? "light" : "dark"}
-        backgroundColor={theme.colors.background}
-        translucent
-      />
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: theme.colors.primary, 

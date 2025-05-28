@@ -24,7 +24,8 @@
         "foregroundImage": "./assets/images/AdaptiveIconPages&Pappiles.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.kelu.pagesndpapilles"
     },
     "web": {
       "bundler": "metro",
@@ -42,10 +43,25 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Default",
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7be2738e-0b9b-4cfd-a417-1b6b59f88889"
+      }
     }
   }
 }

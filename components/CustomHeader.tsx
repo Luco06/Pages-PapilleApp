@@ -37,7 +37,7 @@ export default function CustomHeader() {
     }
   };
   return (
-    <SafeAreaView style={{ backgroundColor: theme.colors.primary }}>
+    <SafeAreaView edges={[ 'bottom']} style={{ backgroundColor: theme.colors.primary }}>
       <View style={styles.HeaderContainer}>
         <Text
           style={{ fontSize: theme.fontSize.medium, color: theme.colors.text }}

@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     padding: 20,
-    marginTop: 20,
   },
   BoxInfo: {
     alignItems: "center",

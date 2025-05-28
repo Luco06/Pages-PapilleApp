@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     padding: 20,
-    marginTop: 30
+
   },
   BoxInfo: {
     alignItems: "flex-start",
