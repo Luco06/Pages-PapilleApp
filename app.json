@@ -2,15 +2,15 @@
   "expo": {
     "name": "pagesndpapilles",
     "slug": "pagesndpapilles",
+    "assetBundlePatterns": [
+      "assets/fonts/*"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/IconPages&Pappiles.png",
     "scheme": "pagesndpapilles",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "fonts": [
-      "./assets/fonts/Playfair-Italic-VariableFont_opsz,wdth,wght.ttf"
-    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
