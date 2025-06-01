@@ -7,13 +7,13 @@ import * as SecureStore from "expo-secure-store";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import {
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Dialog, List, Portal } from "react-native-paper";
 import { ADD_RECIPE } from "../graphql/mutations/addRecipe";
@@ -353,7 +353,7 @@ export default function addRecipe() {
             />
             <List.Item
               onPress={() =>
-                setAddRecipe({ ...addRecipe, categorie: "Dessert" })
+                setAddRecipe({ ...addRecipe, categorie: "Desserts" })
               }
               title="Dessert"
             />

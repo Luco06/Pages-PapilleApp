@@ -121,9 +121,12 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
 
 
   const handleIngredientChange = (index: number, value: string) => {
-    const newIngredients = [...recipeUpdate.ingredients];
-    newIngredients[index] = value;
-    setRecipeUpdate({ ...recipeUpdate, ingredients: newIngredients });
+    setRecipeUpdate(prev => ({
+      ...prev,
+      ingredients: prev.ingredients.map((ingredient, i) => 
+        i === index ? value : ingredient
+      )
+    }));
   };
 
   const addIngredient = () => {
@@ -134,37 +137,35 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
   };
 
   const removeIngredient = (index: number) => {
-    if (Array.isArray(recipeUpdate.ingredients)) {
-      const newIngredients = recipeUpdate.ingredients.filter(
-        (_, i) => i !== index
-      );
-      setRecipeUpdate({ ...recipeUpdate, ingredients: newIngredients });
-    }
+    setRecipeUpdate(prev => ({
+      ...prev,
+      ingredients: prev.ingredients.filter((_, i) => i !== index)
+    }));
   };
 
   const handleInstructionChange = (index: number, value: string) => {
-    if (Array.isArray(recipeUpdate.instructions)) {
-      const newInstructions: string[] = [...recipeUpdate.instructions];
-      newInstructions[index] = value;
-      setRecipeUpdate({ ...recipeUpdate, instructions: newInstructions });
-    }
+    setRecipeUpdate(prev => ({
+      ...prev,
+      instructions: prev.instructions.map((instruction, i) => 
+        i === index ? value : instruction
+      )
+    }));
   };
-
+  
   const addInstruction = () => {
-    setRecipeUpdate({
-      ...recipeUpdate,
-      instructions: [...recipeUpdate.instructions, ""],
-    });
+    setRecipeUpdate(prev => ({
+      ...prev,
+      instructions: [...prev.instructions, ""]
+    }));
   };
-
+  
   const removeInstruction = (index: number) => {
-    if (Array.isArray(recipeUpdate.instructions)) {
-      const newInstructions = recipeUpdate.instructions.filter(
-        (_, i) => i !== index
-      );
-      setRecipeUpdate({ ...recipeUpdate, instructions: newInstructions });
-    }
+    setRecipeUpdate(prev => ({
+      ...prev,
+      instructions: prev.instructions.filter((_, i) => i !== index)
+    }));
   };
+  
   return (
     <View style={styles.Container}>
       <View
@@ -201,9 +202,10 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
         <Input
           key={index}
           value={ingredient}
+          placeholder={`Ingrédient ${index + 1}`}
           style={{right:-35}}
           iconRight={
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Pressable onPress={() => removeIngredient(index)}>
               <Feather
                 name="trash-2"
                 size={24}
@@ -211,16 +213,12 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
               />
             </Pressable>
           }
-          onChangeText={(text) =>
-            setRecipeUpdate((prev) => ({
-              ...prev,
-              ingredients: prev.ingredients.map((ing, i) =>
-                i === index ? text : ing
-              ),
-            }))
-          }
+          onChangeText={(text) => handleIngredientChange(index, text)}
         />
       ))}
+            <View style={styles.BoxBtn}>
+        <Button txt="+ Ajouter Ingrédient" onPress={addIngredient} />
+      </View>
       <Text
         style={{ fontSize: theme.fontSize.medium, color: theme.colors.text }}
       >
@@ -231,9 +229,10 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
         <Input
           key={index}
           value={instruction}
+          placeholder={`Étape ${index + 1}`}
           style={{right:-35}}
           iconRight={
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Pressable onPress={() => removeInstruction(index)}>
               <Feather
                 name="trash-2"
                 size={24}
@@ -241,17 +240,12 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
               />
             </Pressable>
           }
-          onChangeText={(text) =>
-            setRecipeUpdate((prev) => ({
-              ...prev,
-              instructions: prev.instructions.map((ing, i) =>
-                i === index ? text : ing
-              ),
-            }))
-          }
+          onChangeText={(text) => handleInstructionChange(index, text)}
         />
       ))}
-
+      <View style={styles.BoxBtn}>
+        <Button txt="+ Ajouter Instruction" onPress={addInstruction} />
+      </View>
       <Input
         label="Nombre de Personnes"
         value={recipeUpdate.nb_person}
@@ -327,7 +321,7 @@ export default function UpdateRecipe({ recipe, setIsModalOpen }: UpdateRecipePro
             />
             <List.Item
               onPress={() =>
-                setRecipeUpdate({ ...recipeUpdate, categorie: "Dessert" })
+                setRecipeUpdate({ ...recipeUpdate, categorie: "Desserts" })
               }
               title="Dessert"
             />

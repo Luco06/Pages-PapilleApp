@@ -6,12 +6,13 @@ type InputProps = {
   label?: string;
   value: string;
   iconRight?: ReactElement;
+  placeholder?:string;
   secureTextEntry?: boolean;
   onChangeText: (text: string) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function Input({ label, value, onChangeText, secureTextEntry, iconRight, style }: InputProps) {
+export default function Input({ label, value, onChangeText, secureTextEntry, iconRight, style, placeholder }: InputProps) {
   const theme = useTheme();
 
   return (
@@ -21,6 +22,7 @@ export default function Input({ label, value, onChangeText, secureTextEntry, ico
       </Text>
       <View style={styles.inputContainer}>
         <TextInput
+        placeholder={placeholder}
           style={[
             styles.input,
             {
