@@ -76,7 +76,7 @@ export default function CardRecipeDetails({
           Catégorie: {categorie}
         </Text>
         <Text style={[styles.FooterText, { color: theme.colors.text }]}>
-          Publique: {publique ? "Oui" : "Non"}
+          Publique: {publique ? "Non" : "Oui"}
         </Text>
       </View>
       <View style={styles.Section}>

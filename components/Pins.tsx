@@ -9,7 +9,7 @@ const Categories = [
   { id: 1, txt: "Viande" },
   { id: 2, txt: "Poisson" },
   { id: 3, txt: "Végétarien" },
-  { id: 4, txt: "Desserts" },
+  { id: 4, txt: "Dessert" },
   { id: 5, txt: "Boissons" },
   { id: 6, txt: "Sauces" },
 ];
