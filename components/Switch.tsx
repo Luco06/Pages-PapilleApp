@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Switch } from "react-native-paper";
 import { useTheme } from "../theme/themeContext";
 
@@ -6,12 +6,14 @@ type SwitchProp = {
   value: boolean;
   label: string;
   onChange: (value: boolean) => void;
+  style?: StyleProp<ViewStyle>;
 };
 
 export default function SwitchComponent({
   value,
   label,
   onChange,
+  style
 }: SwitchProp) {
   const theme = useTheme();
   return (
@@ -41,11 +43,14 @@ export default function SwitchComponent({
 }
 
 const styles = StyleSheet.create({
+  constainer:{
+    display:"flex"
+  },
   wrapper: {
     width: "60%",
   },
   label: {
-    marginBottom: 6,
+
     textAlign: "center",
   },
   inputContainer: {

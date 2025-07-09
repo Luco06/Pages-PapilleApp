@@ -34,6 +34,8 @@ export default function Profile() {
   const [token, setToken] = useState<string | null>(null);
   const [seeFavoris, setSeeFavoris] = useState(false);
   const [favRecipe, setFavRecipe] = useState<RecipeType[]>([]);
+  const [filteredFavs, setFilteredFavs] = useState<RecipeType[]>([]);
+
 
   useEffect(() => {
     const tokenStore = SecureStore.getItem("token");
@@ -62,7 +64,17 @@ export default function Profile() {
       setFavRecipe(data?.user.favoris || []);
     }
   }, [user, data?.user.recettes]);
-
+  
+  useEffect(() => {
+    if (selectedCategory) {
+      setFilteredFavs(
+        favRecipe.filter((recipe) => recipe.categorie === selectedCategory)
+      );
+    } else {
+      setFilteredFavs(favRecipe);
+    }
+  }, [favRecipe, selectedCategory]);
+  
   const handleSelectCategory = (category: string) => {
     const newCategory = selectedCategory === category ? null : category;
     setSelectedCategory(newCategory);
@@ -152,7 +164,7 @@ export default function Profile() {
           <Text>Favoris</Text>
           {favRecipe && favRecipe.length > 0 ? (
             <FlashList
-              data={favRecipe}
+              data={filteredFavs}
               estimatedItemSize={200}
               keyExtractor={(item) => item.id}
               contentContainerStyle={{ padding: 16 }}

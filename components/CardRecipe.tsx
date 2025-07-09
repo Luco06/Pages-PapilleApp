@@ -49,11 +49,14 @@ export default function CardRecipe({
             <Text style={[styles.FooterText, {color: theme.colors.text}]}>Difficulté: {dificulty}</Text>
             <Text style={[styles.FooterText, {color: theme.colors.text}]}>Catégorie: {categorie}</Text>
             {showFavoriteSwitch && (
-                <SwitchComponent 
+                <View style={styles.FooterItem}>
+                        <SwitchComponent 
                     label="Favoris" 
                     value={favoris || false} 
                     onChange={onFavoriteChange || (() => console.log("Hello"))}
                 />
+                </View>
+            
             )}
         </View>
     </Pressable>
@@ -107,5 +110,10 @@ const styles  = StyleSheet.create({
     FooterText: {
         margin: 4,
         width: '45%',
+    },
+    FooterItem:{
+        width:'30%',
+        display:"flex",
+        flexDirection:"row"
     }
 })
