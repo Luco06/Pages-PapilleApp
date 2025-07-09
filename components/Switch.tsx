@@ -5,10 +5,14 @@ import { useTheme } from "../theme/themeContext";
 type SwitchProp = {
   value: boolean;
   label: string;
-  onChange:(value:boolean)=>void;
+  onChange: (value: boolean) => void;
 };
 
-export default function SwitchComponent({ value, label, onChange }: SwitchProp) {
+export default function SwitchComponent({
+  value,
+  label,
+  onChange,
+}: SwitchProp) {
   const theme = useTheme();
   return (
     <View>
@@ -20,7 +24,18 @@ export default function SwitchComponent({ value, label, onChange }: SwitchProp) 
       >
         {label}
       </Text>
-      <Switch onValueChange={onChange} color={theme.colors.primary} value={value} />
+      <Switch
+        trackColor={{
+          false: theme.colors.switchTrack,
+          true: theme.colors.switchActiveTrack,
+        }}
+        thumbColor={
+          value ? theme.colors.switchActiveThumb : theme.colors.switchThumb
+        }
+        onValueChange={onChange}
+        color={theme.colors.primary}
+        value={value}
+      />
     </View>
   );
 }
