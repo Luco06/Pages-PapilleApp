@@ -14,6 +14,9 @@ import {
 } from "react-native";
 import AddRecipe from "../../components/AddRecipe";
 import Avatar from "../../components/Avatar";
+import Button from "../../components/Button";
+import CardRecipe from "../../components/CardRecipe";
+import CardRecipeDetails from "../../components/CardRecipeDetails";
 import CardRecipeProfile from "../../components/CardRecipeProfile";
 import Pins from "../../components/Pins";
 import UpdateRecipe from "../../components/UpdateRecipe";
@@ -29,7 +32,8 @@ export default function Profile() {
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [visibleAddRecipe, setVisibleAddRecipe] = useState(false);
+  const [seeFavoris, setSeeFavoris] = useState(false);
+  const [favRecipe, setFavRecipe] = useState<RecipeType[]>([]);
 
   useEffect(() => {
     const tokenStore = SecureStore.getItem("token");
@@ -55,6 +59,7 @@ export default function Profile() {
     if (Array.isArray(user?.recettes)) {
       setRecipes(data?.user.recettes);
       setFilteredRecipes(data?.user.recettes);
+      setFavRecipe(data?.user.favoris || []);
     }
   }, [user, data?.user.recettes]);
 
@@ -93,8 +98,7 @@ export default function Profile() {
       style={[styles.Container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.ViewAvatar}>
-        <AddRecipe
-        />
+        <AddRecipe />
 
         <Avatar
           src={
@@ -131,48 +135,105 @@ export default function Profile() {
           selectedCategory={selectedCategory}
         />
       </View>
-      {filteredRecipes && filteredRecipes.length > 0 ? (
-        <FlashList
-          data={filteredRecipes}
-          estimatedItemSize={200}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16 }}
-          renderItem={({ item }) => (
-            <View style={styles.CenteredCardWrapper}>
-              <CardRecipeProfile
-                onPressDialog={() =>
-                  DeleteRecette({
-                    variables: {
-                      deleteRecetteId: item.id,
-                    },
-                  })
-                }
-                onPress={() => handleRecipeClick(item)}
-                titre={item.titre}
-                auteur={item.auteur.prenom}
-                bgImage={{ uri: item.img }}
-                couvert={item.nb_person}
-                cuission={item.tps_cook}
-                tep_prep={item.tps_prep}
-                dificulty={item.dificulty}
-                categorie={item.categorie}
-                publique={item.est_public}
-              />
-            </View>
-          )}
+      <View style={styles.ViewBtn}>
+        <Button
+          active={seeFavoris === false}
+          onPress={() => setSeeFavoris(false)}
+          txt="Mes recettes"
         />
+        <Button
+          active={seeFavoris === true}
+          onPress={() => setSeeFavoris(true)}
+          txt="Mes favoris"
+        />
+      </View>
+      {seeFavoris ? (
+        <>
+          <Text>Favoris</Text>
+          {favRecipe && favRecipe.length > 0 ? (
+            <FlashList
+              data={favRecipe}
+              estimatedItemSize={200}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ padding: 16 }}
+              renderItem={({ item }) => (
+                <View style={styles.CenteredCardWrapper}>
+                  <CardRecipe
+                    onPress={() => handleRecipeClick(item)}
+                    titre={item.titre}
+                    auteur={item.auteur.prenom}
+                    bgImage={{ uri: item.img }}
+                    couvert={item.nb_person}
+                    cuission={item.tps_cook}
+                    tep_prep={item.tps_prep}
+                    dificulty={item.dificulty}
+                    categorie={item.categorie}
+                  />
+                </View>
+              )}
+            />
+          ) : (
+            <Text
+              style={{
+                color: theme.colors.text,
+                textAlign: "center",
+                marginTop: 20,
+              }}
+            >
+              Aucune recette trouvée dans cette catégorie.
+            </Text>
+          )}
+        </>
       ) : (
-        <Text
-          style={{
-            color: theme.colors.text,
-            textAlign: "center",
-            marginTop: 20,
-          }}
-        >
-          Aucune recette trouvée dans cette catégorie.
-        </Text>
+        <>
+          <Text style={[styles.txtSetting, { color: theme.colors.text }]}>
+            Mes Recettes
+          </Text>
+          {filteredRecipes && filteredRecipes.length > 0 ? (
+            <FlashList
+              data={filteredRecipes}
+              estimatedItemSize={200}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ padding: 16 }}
+              renderItem={({ item }) => (
+                <View style={styles.CenteredCardWrapper}>
+                  <CardRecipeProfile
+                    onPressDialog={() =>
+                      DeleteRecette({
+                        variables: {
+                          deleteRecetteId: item.id,
+                        },
+                      })
+                    }
+                    onPress={() => handleRecipeClick(item)}
+                    titre={item.titre}
+                    auteur={item.auteur.prenom}
+                    bgImage={{ uri: item.img }}
+                    couvert={item.nb_person}
+                    cuission={item.tps_cook}
+                    tep_prep={item.tps_prep}
+                    dificulty={item.dificulty}
+                    categorie={item.categorie}
+                    publique={item.est_public}
+                  />
+                </View>
+              )}
+            />
+          ) : (
+            <Text
+              style={{
+                color: theme.colors.text,
+                textAlign: "center",
+                marginTop: 20,
+              }}
+            >
+              Aucune recette trouvée dans cette catégorie.
+            </Text>
+          )}
+        </>
       )}
-      <Modal
+      {seeFavoris ? (
+        <Modal
         visible={!!selectedRecipe}
         animationType="slide"
         transparent={true}
@@ -185,11 +246,26 @@ export default function Profile() {
         >
           <View style={styles.CenteredCardWrapperModal}>
             <ScrollView
-              contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+              contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "center",
+              }}
             >
-              <UpdateRecipe
-                setIsModalOpen={closeModal}
-                recipe={selectedRecipe}
+            <CardRecipeDetails
+                titre={selectedRecipe?.titre || ""}
+                auteur={selectedRecipe?.auteur.prenom || ""}
+                bgImage={{ uri: selectedRecipe?.img || "" }}
+                couvert={selectedRecipe?.nb_person || ""}
+                cuission={selectedRecipe?.tps_cook || ""}
+                tep_prep={selectedRecipe?.tps_prep || ""}
+                dificulty={selectedRecipe?.dificulty || ""}
+                categorie={selectedRecipe?.categorie || ""}
+                ingredients={selectedRecipe?.ingredients || []}
+                instructions={
+                  Array.isArray(selectedRecipe?.instructions)
+                    ? selectedRecipe.instructions
+                    : []
+                }
               />
             </ScrollView>
             <TouchableOpacity
@@ -206,6 +282,45 @@ export default function Profile() {
           </View>
         </View>
       </Modal>
+      ) : (
+        <Modal
+          visible={!!selectedRecipe}
+          animationType="slide"
+          transparent={true}
+        >
+          <View
+            style={[
+              styles.ModalWrapper,
+              { backgroundColor: theme.colors.background },
+            ]}
+          >
+            <View style={styles.CenteredCardWrapperModal}>
+              <ScrollView
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <UpdateRecipe
+                  setIsModalOpen={closeModal}
+                  recipe={selectedRecipe}
+                />
+              </ScrollView>
+              <TouchableOpacity
+                style={[
+                  styles.CloseButton,
+                  { backgroundColor: theme.colors.primary },
+                ]}
+                onPress={closeModal}
+              >
+                <Text style={[styles.CloseText, { color: theme.colors.text }]}>
+                  Fermer
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 }
@@ -262,5 +377,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     padding: 8,
+  },
+  ViewBtn: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: 10,
   },
 });
