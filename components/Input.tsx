@@ -8,11 +8,23 @@ type InputProps = {
   iconRight?: ReactElement;
   placeholder?:string;
   secureTextEntry?: boolean;
+  autoComplete?: 
+  | 'name'
+  | 'email'
+  | 'password'
+  | 'password-new'
+  | 'username'
+  | 'tel'
+  | 'street-address'
+  | 'postal-code'
+  | 'cc-number'
+  | 'off'
+  | undefined;
   onChangeText: (text: string) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function Input({ label, value, onChangeText, secureTextEntry, iconRight, style, placeholder }: InputProps) {
+export default function Input({ label, value, onChangeText, secureTextEntry, iconRight, style, placeholder, autoComplete }: InputProps) {
   const theme = useTheme();
 
   return (
@@ -23,6 +35,7 @@ export default function Input({ label, value, onChangeText, secureTextEntry, ico
       <View style={styles.inputContainer}>
         <TextInput
         placeholder={placeholder}
+        autoComplete={autoComplete}
           style={[
             styles.input,
             {
