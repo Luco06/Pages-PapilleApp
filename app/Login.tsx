@@ -10,32 +10,30 @@ import Title from "../components/Title";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../theme/themeContext";
 
-
 const LoginScreen = () => {
   const theme = useTheme();
   const [mdp, setMdp] = useState("");
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const {login} = useAuth();
-  const [errorMsg, setErrorMsg] = useState("");
+  const { login } = useAuth();
 
-  const handleLogin = async()=>{
-    try{
-      await login(email, mdp);
-    }catch(error: any) {
+
+  const handleLogin = async () => {
+    try {
+      await login(email.toLowerCase(), mdp);
+    } catch (error: any) {
       console.error("Login error", error);
-      setErrorMsg("Email ou mot de passe incorect")
     }
-  }
+  };
 
   return (
     <SafeAreaView
-    style={[
-      styles.container,
-      {
-        backgroundColor: theme.colors.background
-      }
-    ]}
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.colors.background,
+        },
+      ]}
     >
       <Title title="Pages & Papilles" />
       <TextAuthPage txt="Connexion" />
@@ -43,12 +41,14 @@ const LoginScreen = () => {
         value={email}
         onChangeText={(text) => setEmail(text)}
         label="Email"
+        autoComplete="email"
       />
       <Input
         secureTextEntry={!showPassword}
         value={mdp}
         onChangeText={(text) => setMdp(text)}
         label="Mot de passe"
+        autoComplete="password"
         iconRight={
           <Pressable onPress={() => setShowPassword(!showPassword)}>
             <AntDesign
@@ -61,18 +61,21 @@ const LoginScreen = () => {
       />
       <Button txt="Se connecter" onPress={handleLogin} />
       <Pressable
-      style={[
-        styles.PressableTxt,
-        {
-          margin: theme.spacing.md,
-          marginTop: theme.spacing.md,
-        }
-      ]}
+        style={[
+          styles.PressableTxt,
+          {
+            margin: theme.spacing.md,
+            marginTop: theme.spacing.md,
+          },
+        ]}
       >
         <Link href={"/Signin"}>
-   
-      <Text style={{fontSize:theme.fontSize.small, color: theme.colors.text}}>Pas encore inscrit ?</Text>
-      </Link>
+          <Text
+            style={{ fontSize: theme.fontSize.small, color: theme.colors.text }}
+          >
+            Pas encore inscrit ?
+          </Text>
+        </Link>
       </Pressable>
     </SafeAreaView>
   );
@@ -88,6 +91,5 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
 });
-
 
 export default LoginScreen;

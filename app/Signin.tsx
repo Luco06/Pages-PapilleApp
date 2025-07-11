@@ -29,7 +29,11 @@ const SigninScreen = () => {
   });
   const handleSingn = async () => {
     try {
-      await createUser({ variables: { input: userInfo } });
+      const normalizedUserInfo = {
+        ...userInfo,
+        email: userInfo.email.toLowerCase().trim()
+      };
+      await createUser({ variables: { input: normalizedUserInfo } });
     } catch (error) {
       console.error("Singn error", error);
     }
