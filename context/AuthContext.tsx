@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useAtom } from "jotai";
 import { createContext, useContext, useEffect, useState } from "react";
+import { Alert } from "react-native";
 import { LOGIN_USER } from "../graphql/mutations/login";
 import { UserAtom } from "../utils/atoms";
 
@@ -53,6 +54,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (err) {
       console.error("Érreur lors de la connexion:", err);
+      Alert.alert(   "Erreur de connexion",
+      "Email ou mot de passe incorrect",
+      [
+        {
+          text: "OK",
+          style: "default"
+        }
+      ]
+      )
+      throw err;
     }
   };
 
